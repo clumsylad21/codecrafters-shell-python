@@ -2,7 +2,7 @@ import sys
 import os
 import subprocess
 
-BUILTINS = ["echo", "exit", "type"]
+BUILTINS = ["echo", "exit", "type", "pwd"]
 
 
 def find_executable(cmd):
@@ -21,6 +21,9 @@ def run_command(cmd, args):
 
     elif cmd == "exit":
         sys.exit(0)
+
+    elif cmd == "pwd":
+        print(os.getcwd())
 
     elif cmd == "type":
         target = args[0] if args else None
