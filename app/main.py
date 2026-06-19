@@ -15,7 +15,7 @@ def run_command(cmd, arg):
         else:
             print(f"{target} not found")
     else:
-        print(f"{cmd} command not found")
+        print(f"{cmd}: command not found")
 
 def main():
 
