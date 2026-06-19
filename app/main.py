@@ -11,11 +11,11 @@ def run_command(cmd, arg):
     elif cmd == "type":
         target = arg[0] if arg else None
         if target in BUILTINS:
-            print(f"{target}: is a shell builtin.")
+            print(f"{target} is a shell builtin.")
         else:
-            print(f"{target}: not found")
+            print(f"{target} not found")
     else:
-        print(f"{cmd}: command not found")
+        print(f"{cmd} command not found")
 
 def main():
 
