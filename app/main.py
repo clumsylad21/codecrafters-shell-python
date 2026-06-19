@@ -1,4 +1,5 @@
 import sys
+import os
 
 BUILTINS = ["echo", "exit", "type"]
 
@@ -11,8 +12,15 @@ def run_command(cmd, arg):
         target = arg[0] if arg else None
         if target in BUILTINS:
             print(f"{target} is a shell builtin")
+            return
         else:
-            print(f"{target} not found")
+            for directory in os.environ.get("PATH", "").split(os.pathsep):
+                full_path = os.path.join(directory, target)
+                if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+                    print(f"{target} is {full_path}")
+                    return
+                
+        print(f"{target} not found")
     else:
         print(f"{cmd}: command not found")
 
