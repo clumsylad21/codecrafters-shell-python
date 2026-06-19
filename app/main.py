@@ -6,7 +6,6 @@ def run_command(cmd, arg):
     if cmd == "echo":
         print(" ".join(arg))
     elif cmd == "exit":
-        print("Exiting...")
         sys.exit(0)
     elif cmd == "type":
         target = arg[0] if arg else None
