@@ -40,7 +40,7 @@ def run_command(cmd, args):
         executable = find_executable(cmd)
 
         if executable:
-            subprocess.run([executable] + args)
+            subprocess.run([cmd] + args, executable=executable)
         else:
             print(f"{cmd}: command not found")
 
