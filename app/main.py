@@ -26,7 +26,10 @@ def run_command(cmd, args):
         print(os.getcwd())
 
     elif cmd == "cd":
-        target = args[0] if args else os.path.expanduser("~")
+        target = args[0] 
+
+        if target == "~":
+            target = os.environ.get("HOME", os.path.expanduser("~"))
 
         try:
             os.chdir(target)
