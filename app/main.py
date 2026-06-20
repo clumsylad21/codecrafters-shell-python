@@ -16,8 +16,9 @@ def find_executable(cmd):
     return None
 
 
-def run_command(cmd, args, stdout=None):
+def run_command(cmd, args, stdout=None, stderr=None):
     output = stdout if stdout else sys.stdout
+    error_output = stderr if stderr else sys.stderr
 
     if cmd == "echo":
         print(" ".join(args), file=output)
@@ -61,9 +62,12 @@ def run_command(cmd, args, stdout=None):
         executable = find_executable(cmd)
 
         if executable:
-            subprocess.run([cmd] + args, executable=executable, stdout=stdout)
+            subprocess.run([cmd] + args,
+                            executable=executable,
+                            stdout=stdout,
+                            stderr=stderr)
         else:
-            print(f"{cmd}: command not found")
+            print(f"{cmd}: command not found", file=error_output)
 
 
 def main():
@@ -81,17 +85,27 @@ def main():
         args = parts[1:]
 
         redirect_path = None
-        for operator in [">", "1>"]:
+        stdout_path = None
+        stderr_path = None
+        for operator in [">", "1>", "2>"]:
             if operator in args:
                 idx = args.index(operator)
-                if idx + 1 < len(args):
-                    redirect_path = args[idx + 1]
-                    args = args[:idx]  # Remove the redirection part
+                redirect_path = args[idx + 1]
+                args = args[:idx]  # Remove the redirection part
+
+                if operator == "2>":
+                    stderr_path = redirect_path
+                else:
+                    stdout_path = redirect_path
+                
                 break
 
-        if redirect_path:
-            with open(redirect_path, "w") as output_file:
+        if stdout_path:
+            with open(stdout_path, "w") as output_file:
                 run_command(cmd, args, stdout=output_file)
+        elif stderr_path:
+            with open(stderr_path, "w") as error_file:
+                run_command(cmd, args, stderr=error_file)
         else:
             run_command(cmd, args)
 
