@@ -16,9 +16,11 @@ def find_executable(cmd):
     return None
 
 
-def run_command(cmd, args):
+def run_command(cmd, args, stdout=None):
+    output = stdout if stdout else sys.stdout
+
     if cmd == "echo":
-        print(" ".join(args))
+        print(" ".join(args), file=output)
 
     elif cmd == "exit":
         sys.exit(0)
@@ -59,7 +61,7 @@ def run_command(cmd, args):
         executable = find_executable(cmd)
 
         if executable:
-            subprocess.run([cmd] + args, executable=executable)
+            subprocess.run([cmd] + args, executable=executable, stdout=stdout)
         else:
             print(f"{cmd}: command not found")
 
@@ -78,7 +80,20 @@ def main():
         cmd = parts[0]
         args = parts[1:]
 
-        run_command(cmd, args)
+        redirect_path = None
+        for operator in [">", "1>"]:
+            if operator in args:
+                idx = args.index(operator)
+                if idx + 1 < len(args):
+                    redirect_path = args[idx + 1]
+                    args = args[:idx]  # Remove the redirection part
+                break
+
+        if redirect_path:
+            with open(redirect_path, "w") as output_file:
+                run_command(cmd, args, stdout=output_file)
+        else:
+            run_command(cmd, args)
 
 
 if __name__ == "__main__":
