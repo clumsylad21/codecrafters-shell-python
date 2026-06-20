@@ -25,6 +25,18 @@ def run_command(cmd, args):
     elif cmd == "pwd":
         print(os.getcwd())
 
+    elif cmd == "cd":
+        target = args[0] if args else os.path.expanduser("~")
+
+        try:
+            os.chdir(target)
+        except FileNotFoundError:
+            print(f"cd: {target}: No such file or directory")
+        except NotADirectoryError:
+            print(f"cd: {target}: Not a directory")
+        except PermissionError:
+            print(f"cd: {target}: Permission denied")
+
     elif cmd == "type":
         target = args[0] if args else None
 
