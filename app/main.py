@@ -1,6 +1,7 @@
 import sys
 import os
 import subprocess
+import shlex
 
 BUILTINS = ["echo", "exit", "type", "pwd", "cd"]
 
@@ -69,7 +70,7 @@ def main():
         sys.stdout.flush()
 
         user_input = sys.stdin.readline().strip()
-        parts = user_input.split()
+        parts = shlex.split(user_input)
 
         if not parts:
             continue
