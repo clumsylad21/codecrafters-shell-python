@@ -88,7 +88,7 @@ def main():
         stdout_path = None
         stderr_path = None
         redirect_mode = "w"  # Default write mode
-        for operator in [">", "1>", "2>", ">>", "1>>"]:
+        for operator in [">", "1>", "2>", ">>", "1>>", "2>>"]:
             if operator in args:
                 idx = args.index(operator)
                 redirect_path = args[idx + 1]
@@ -96,6 +96,9 @@ def main():
 
                 if operator in [">>", "1>>"]:
                     stdout_path = redirect_path
+                    redirect_mode = "a"  # Append mode
+                elif operator in ["2>>"]:
+                    stderr_path = redirect_path
                     redirect_mode = "a"  # Append mode
                 elif operator == "2>":
                     stderr_path = redirect_path
@@ -108,7 +111,7 @@ def main():
             with open(stdout_path, redirect_mode) as output_file:
                 run_command(cmd, args, stdout=output_file)
         elif stderr_path:
-            with open(stderr_path, "w") as error_file:
+            with open(stderr_path, redirect_mode) as error_file:
                 run_command(cmd, args, stderr=error_file)
         else:
             run_command(cmd, args)
