@@ -87,7 +87,7 @@ def main():
         redirect_path = None
         stdout_path = None
         stderr_path = None
-        redirect_mode = w
+        redirect_mode = "w"  # Default write mode
         for operator in [">", "1>", "2>", ">>", "1>>"]:
             if operator in args:
                 idx = args.index(operator)
