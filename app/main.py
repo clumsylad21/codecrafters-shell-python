@@ -87,7 +87,7 @@ def main():
         redirect_path = None
         stdout_path = None
         stderr_path = None
-        for operator in [">", "1>", "2>"]:
+        for operator in [">", "1>", ">>", "2>"]:
             if operator in args:
                 idx = args.index(operator)
                 redirect_path = args[idx + 1]
