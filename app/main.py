@@ -87,13 +87,17 @@ def main():
         redirect_path = None
         stdout_path = None
         stderr_path = None
-        for operator in [">", "1>", ">>", "2>"]:
+        redirect_mode = w
+        for operator in [">", "1>", "2>", ">>", "1>>"]:
             if operator in args:
                 idx = args.index(operator)
                 redirect_path = args[idx + 1]
                 args = args[:idx]  # Remove the redirection part
 
-                if operator == "2>":
+                if operator in [">>", "1>>"]:
+                    stdout_path = redirect_path
+                    redirect_mode = "a"  # Append mode
+                elif operator == "2>":
                     stderr_path = redirect_path
                 else:
                     stdout_path = redirect_path
@@ -101,7 +105,7 @@ def main():
                 break
 
         if stdout_path:
-            with open(stdout_path, "w") as output_file:
+            with open(stdout_path, redirect_mode) as output_file:
                 run_command(cmd, args, stdout=output_file)
         elif stderr_path:
             with open(stderr_path, "w") as error_file:
