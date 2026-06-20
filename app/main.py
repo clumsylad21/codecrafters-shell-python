@@ -2,7 +2,7 @@ import sys
 import os
 import subprocess
 
-BUILTINS = ["echo", "exit", "type", "pwd"]
+BUILTINS = ["echo", "exit", "type", "pwd", "cd"]
 
 
 def find_executable(cmd):
