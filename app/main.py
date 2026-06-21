@@ -28,7 +28,7 @@ def complete_input(text, state):
     matches = sorted(set(matches))
 
     if state < len(matches):
-        return matches[state]
+        return matches[state] + " "
 
     return None
 
