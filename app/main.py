@@ -2,9 +2,25 @@ import sys
 import os
 import subprocess
 import shlex
+import readline
 
 BUILTINS = ["echo", "exit", "type", "pwd", "cd"]
+COMPLETABLE_BUILTINS = ["echo", "exit"]
 
+def complete_builtin(text, state):
+    matches = []
+
+    for command in COMPLETABLE_BUILTINS:
+        if command.startswith(text):
+            matches.append(command + " ")
+
+    if state < len(matches):
+        return matches[state]
+    
+    return None
+
+readline.set_completer(complete_builtin)
+readline.parse_and_bind("tab: complete")
 
 def find_executable(cmd):
     for directory in os.environ.get("PATH", "").split(os.pathsep):
@@ -72,10 +88,10 @@ def run_command(cmd, args, stdout=None, stderr=None):
 
 def main():
     while True:
-        sys.stdout.write("$ ")
-        sys.stdout.flush()
-
-        user_input = sys.stdin.readline().strip()
+        try:
+            user_input = input("$ ").strip()
+        except EOFError:
+            break
         parts = shlex.split(user_input)
 
         if not parts:
