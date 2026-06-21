@@ -7,19 +7,33 @@ import readline
 BUILTINS = ["echo", "exit", "type", "pwd", "cd"]
 COMPLETABLE_BUILTINS = ["echo", "exit"]
 
-def complete_builtin(text, state):
-    matches = []
+def complete_command(text, state):
+    matches = set()
 
+    #Built-in matches
     for command in COMPLETABLE_BUILTINS:
         if command.startswith(text):
-            matches.append(command + " ")
+            matches.add(command)
+
+    #Executable matches
+    for directory in os.environ.get("PATH", "").split(os.pathsep):
+        try:
+            filenames = os.listdir(directory)
+        except FileNotFoundError:
+            continue
+
+        for filename in filenames:
+                if filename.startswith(text) and os.access(os.path.join(directory, filename), os.X_OK):
+                    matches.add(filename)
+
+    matches = sorted(matches)
 
     if state < len(matches):
-        return matches[state]
+        return matches[state] + " "
     
     return None
 
-readline.set_completer(complete_builtin)
+readline.set_completer(complete_command)
 readline.parse_and_bind("tab: complete")
 
 def find_executable(cmd):
