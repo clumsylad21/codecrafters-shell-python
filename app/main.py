@@ -7,7 +7,32 @@ import readline
 BUILTINS = ["echo", "exit", "type", "pwd", "cd"]
 COMPLETABLE_BUILTINS = ["echo", "exit"]
 
-def complete_command(text, state):
+def complete_input(text, state):
+    line = readline.get_line_buffer()
+
+    if " " in line:
+        # Argument position: filename completion
+        prefix = line.rsplit(" ", 1)[-1]
+
+        matches = [
+            filename + " "
+            for filename in os.listdir(".")
+            if filename.startswith(prefix)
+            and os.path.isfile(filename)
+        ]
+
+    else:
+        # First word: existing builtin/executable completion
+        matches = complete_command(text)
+
+    matches = sorted(set(matches))
+
+    if state < len(matches):
+        return matches[state]
+
+    return None
+
+def complete_command(text):
     matches = set()
 
     #Built-in matches
@@ -27,13 +52,10 @@ def complete_command(text, state):
                     matches.add(filename)
 
     matches = sorted(matches)
-
-    if state < len(matches):
-        return matches[state] + " "
     
-    return None
+    return matches
 
-readline.set_completer(complete_command)
+readline.set_completer(complete_input)
 readline.parse_and_bind("tab: complete")
 
 def find_executable(cmd):
