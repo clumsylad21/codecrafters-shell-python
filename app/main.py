@@ -15,7 +15,7 @@ def complete_input(text, state):
         prefix = line.rsplit(" ", 1)[-1]
 
         matches = [
-            filename + " "
+            filename
             for filename in os.listdir(".")
             if filename.startswith(prefix)
             and os.path.isfile(filename)
@@ -56,6 +56,7 @@ def complete_command(text):
     return matches
 
 readline.set_completer(complete_input)
+readline.set_completer_delims(" \t\n")
 readline.parse_and_bind("tab: complete")
 
 def find_executable(cmd):
